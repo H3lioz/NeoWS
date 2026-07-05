@@ -2,6 +2,8 @@ import requests
 import init
 import json
 from pathlib import Path
+from datetime import datetime
+
 
 #Prepare url for requesting
 params = {'start_date':init.date_begin, 'end_date':init.date_end, 'api_key':init.api_key}
@@ -28,10 +30,11 @@ for asteroids in request_dict["near_earth_objects"].values():
 json_string = json.dumps(request_dict["near_earth_objects"], indent=4, ensure_ascii=False)
 
 #writing json data 
-path = Path('/home/He1ioz/Документы/python/NeoWs/ignore/temp.json')
+path = Path(f'/home/He1ioz/Документы/python/NeoWs/ignore/raw data from {datetime.now()}.json')
 path.write_text(json_string)
 
 #MAking simple log-file
 logging_path = Path('/home/He1ioz/Документы/python/NeoWs/ignore/logs.txt')
-logging_path.write_text(f'return code: {r.status_code}  total asteroids: {request_dict["element_count"]}')
+with logging_path.open('a') as logger :
+            logger.write(f'return code: {r.status_code}  total asteroids: {request_dict["element_count"]}    extract date {datetime.now()}')
 
