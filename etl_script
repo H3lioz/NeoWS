@@ -1,0 +1,8 @@
+#!/bin/bash
+
+podman start nasa-postgres 2>>log
+python extract.py
+python transform.py
+python load.py
+
+podman stop nasa-postgres
