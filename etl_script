@@ -1,8 +1,11 @@
 #!/bin/bash
 
-podman start nasa-postgres 2>>log
+echo ====================Script Started=================== >> log
+
+podman start nasa-postgres >>log 2>&1
 python extract.py
 python transform.py
 python load.py
-
+echo ======================Script Ended==================== >> log
 podman stop nasa-postgres
+echo

@@ -3,9 +3,10 @@ import init
 from pathlib import Path
 from datetime import datetime
 import pandas as pd
-
-logging_path = Path('/home/He1ioz/Документы/python/NeoWs/ignore/logs.txt')
-
+import logging
+ 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 try:
     with psycopg.connect(
@@ -15,27 +16,27 @@ try:
         host=init.DB_HOST,
         port=init.DB_PORT
     ) as conn:
-        with logging_path.open('a') as logger :
-            logger.write(f"\n✅ Подключение успешно    {datetime.now()}")
+        logger.info(f"✅ Подключение успешно")
+
         with conn.cursor() as cur:
-            df1 = pd.read_csv('/home/He1ioz/Документы/python/NeoWs/ignore/Asteroid_DB.csv')
+
+            df1 = pd.read_csv(init.home/'ignore/Asteroid_DB.csv')
             astr_val = df1.to_records(index=False).tolist()
             cur.executemany(
-            "INSERT INTO asteroids (id, name, size, size_category, magnitude, latest_research_date) values (%s, %s, %s, %s, %s, %s)",
+            "INSERT INTO asteroids (id, name, size, size_category, magnitude, latest_research_date) \
+            values (%s, %s, %s, %s, %s, %s) ON CONFLICT (id) DO UPDATE SET size = EXCLUDED.size, size_category = EXCLUDED.size_category, magnitude = EXCLUDED.magnitude, latest_research_date = EXCLUDED.latest_research_date",
             astr_val)
-            with logging_path.open('a') as logger :
-                logger.write(f"\n✅ Данные астероидов записаны    {datetime.now()}")
+
+            logger.info(f"✅ Данные астероидов записаны")
 
             
             
-            with Path('/home/He1ioz/Документы/python/NeoWs/ignore/Oberving_params.csv').open('r') as data:
+            with (init.home/'ignore/Oberving_params.csv').open('r') as data:
                 with cur.copy("COPY observed_parameters FROM STDIN WITH CSV HEADER") as copy:
                         copy.write(data.read())
 
-            with logging_path.open('a') as logger :
-                logger.write(f"\n✅ Данные о пареметрах астероидов записаны    {datetime.now()}")
+            logger.info(f"✅ Данные о пареметрах астероидов записаны")
 
 
 except Exception as e:
-    with logging_path.open('a') as logger :
-            logger.write(f"\n❌ Ошибка: {e}    {datetime.now()}")
+    logger.error(f"❌ Ошибка: {e}")

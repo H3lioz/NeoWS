@@ -1,12 +1,17 @@
 import pandas as pd
 from pathlib import Path
 import json
+import init
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 #Opening json-file
-path = Path('/home/He1ioz/Документы/python/NeoWs/ignore/temp.json')
+path = init.home/'ignore/temp.json'
 data = json.loads(path.read_text())
 
-date = "2015-09-07"
+date = init.date_begin
 #Extracting data on current day
 my_data=pd.DataFrame(data[date])
 #Calculating avg size
@@ -25,8 +30,10 @@ asteroid_param_cur = pd.DataFrame({'ID': my_data['id'], 'Close approach date': m
 
 
 #making csv-files output
-patcsv_1 = Path('/home/He1ioz/Документы/python/NeoWs/ignore/Asteroid_DB.csv')
-patcsv_2 = Path('/home/He1ioz/Документы/python/NeoWs/ignore/Oberving_params.csv')
+patcsv_1 = init.home/'ignore/Asteroid_DB.csv'
+patcsv_2 = init.home/'ignore/Oberving_params.csv'
 
 asteroid_db_cur.to_csv(patcsv_1,index=0)
 asteroid_param_cur.to_csv(patcsv_2,index=0)
+
+logger.info(f"Created two CSV-files")
