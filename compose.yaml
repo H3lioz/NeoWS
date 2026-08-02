@@ -1,0 +1,39 @@
+services:
+
+  db:
+    image: postgres:16-alpine
+
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: pgNASA
+      POSTGRES_DB: dbNASA
+    volumes:
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql:Z
+        - ndata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pgNASA -d dbNASA"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+
+  etl:
+    build: .
+    environment:
+        DB_name: dbNASA
+        DB_User: pgNASA
+        DB_password: postgres
+        DB_HOST: db
+        DB_PORT: 5432
+    volumes:
+        - ./logs:/usr/src/NeoWs/logs:Z
+    depends_on:
+        db:
+            condition: service_healthy
+
+
+volumes:
+  ndata:

@@ -1,6 +1,9 @@
-init.py
+logs/
 __pycache__/
 ignore/
+init.py
 log
 Dockerfile
 requirements.txt
+init.sql
+
