@@ -15,10 +15,13 @@ s = 15
 params = {'start_date':init.date_begin, 'end_date':init.date_end, 'api_key':init.api_key}
 url = init.url
 
+
+
+
 #Making a request with checking for return code
 for _ in range(6):
     #Making a request
-    r = requests.get(url, params=params, timeout= (s-5))
+    r = requests.get(url, params=params, timeout= (s-5), verify=False)
     if (r.status_code // 100) != 4: break
     time.sleep(s)
     logger.error(f"return code: {r.status_code}  Trying to reconnect in {s} seconds")
@@ -43,7 +46,7 @@ if 200 <= r.status_code < 300:
     json_string = json.dumps(request_dict["near_earth_objects"], indent=4, ensure_ascii=False)
 
     #writing json data 
-    path = init.home/'ignore'/f'temp.json'
+    path = init.ignore_dir/'temp.json'
     path.write_text(json_string)
 
     #Making log note
@@ -53,3 +56,7 @@ if 300 <= r.status_code < 400: logger.error(f"return code: {r.status_code}  Requ
 if 400 <= r.status_code < 500: logger.error(f"return code: {r.status_code}  Requested source is blocked in your county")
 if 500 <= r.status_code: logger.error(f"return code: {r.status_code}  Error on Server")
 
+if r.status_code != 200:
+    raise RuntimeError(
+        f"NASA API request failed with status code {r.status_code}"
+    )

@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 #Opening json-file
-path = init.home/'ignore/temp.json'
+path = init.ignore_dir/'temp.json'
 data = json.loads(path.read_text())
 
 date = init.date_begin
@@ -30,8 +30,8 @@ asteroid_param_cur = pd.DataFrame({'ID': my_data['id'], 'Close approach date': m
 
 
 #making csv-files output
-patcsv_1 = init.home/'ignore/Asteroid_DB.csv'
-patcsv_2 = init.home/'ignore/Oberving_params.csv'
+patcsv_1 = init.ignore_dir/'Asteroid_DB.csv'
+patcsv_2 = init.ignore_dir/'Oberving_params.csv'
 
 asteroid_db_cur.to_csv(patcsv_1,index=0)
 asteroid_param_cur.to_csv(patcsv_2,index=0)

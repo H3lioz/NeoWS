@@ -20,7 +20,7 @@ try:
 
         with conn.cursor() as cur:
 
-            df1 = pd.read_csv(init.home/'ignore/Asteroid_DB.csv')
+            df1 = pd.read_csv(init.ignore_dir/'Asteroid_DB.csv')
             astr_val = df1.to_records(index=False).tolist()
             cur.executemany(
             "INSERT INTO asteroids (id, name, size, size_category, magnitude, latest_research_date) \
@@ -31,7 +31,7 @@ try:
 
             
             
-            with (init.home/'ignore/Oberving_params.csv').open('r') as data:
+            with (init.ignore_dir/'Oberving_params.csv').open('r') as data:
                 with cur.copy("COPY observed_parameters FROM STDIN WITH CSV HEADER") as copy:
                         copy.write(data.read())
 
