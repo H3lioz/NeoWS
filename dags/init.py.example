@@ -1,0 +1,25 @@
+from pathlib import Path
+import logging
+from datetime import datetime, timedelta
+import os
+
+home = Path(__file__).parent.resolve()
+
+log_dir = home / 'logs'
+log_dir.mkdir(exist_ok=True)
+
+ignore_dir = Path('/opt/airflow/ignore')
+ignore_dir.mkdir(parents=True, exist_ok=True)
+
+logging.basicConfig(level=logging.INFO, filename=str(log_dir/'log'), filemode='a', format='%(module)s %(asctime)s %(levelname)s: %(message)s')
+
+
+url = 'https://api.nasa.gov/neo/rest/v1/feed'
+api_key = ''
+date_begin = str((datetime.now() - timedelta(1)).strftime('%Y-%m-%d'))
+date_end = date_begin
+DB_name = os.getenv('DB_name')
+DB_User = os.getenv('DB_User')
+DB_password = os.getenv('DB_password')
+DB_HOST = os.getenv('DB_HOST')
+DB_PORT = os.getenv('DB_PORT')
