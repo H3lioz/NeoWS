@@ -34,7 +34,7 @@ The entire ETL pipeline is orchestrated by a single Apache Airflow DAG that runs
 
 # How to use
 
-Register at https://data.nasa.gov to acquire an API key.
+Register at https://api.nasa.gov to acquire an API key.
 
 Locate `init.py.example` in the `dags` folder and insert the API key into the `api_key` line.
 
